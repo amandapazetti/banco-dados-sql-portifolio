@@ -1,0 +1,247 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 14.10 (Ubuntu 14.10-0ubuntu0.22.04.1)
+-- Dumped by pg_dump version 14.10 (Ubuntu 14.10-0ubuntu0.22.04.1)
+
+-- Started on 2024-01-08 00:50:06 -03
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 210 (class 1259 OID 16552)
+-- Name: clientes_banco; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.clientes_banco (
+    id integer NOT NULL,
+    nome character varying(100) NOT NULL,
+    cpf character varying(14),
+    data_nascimento date,
+    endereco character varying(255),
+    email character varying(100),
+    saldo_conta numeric(10,2) DEFAULT 0.00,
+    pais character varying(100) DEFAULT 'Brasil'::character varying,
+    numero_passaporte character varying(100),
+    data_criacao date DEFAULT CURRENT_DATE,
+    hora_criacao time without time zone DEFAULT CURRENT_TIME,
+    data_atualizacao date,
+    hora_atualizacao time without time zone,
+    usuario_responsavel character varying(100),
+    telefone character varying(20),
+    CONSTRAINT check_cpf_passaporte CHECK (((((pais)::text = 'Brasil'::text) AND (cpf IS NOT NULL) AND (numero_passaporte IS NULL)) OR (((pais)::text <> 'Brasil'::text) AND (cpf IS NULL) AND (numero_passaporte IS NOT NULL) AND ((data_atualizacao IS NULL) AND (hora_atualizacao IS NULL) AND (usuario_responsavel IS NULL)))))
+);
+
+
+ALTER TABLE public.clientes_banco OWNER TO postgres;
+
+--
+-- TOC entry 209 (class 1259 OID 16551)
+-- Name: clientes_banco_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.clientes_banco_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.clientes_banco_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3378 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: clientes_banco_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.clientes_banco_id_seq OWNED BY public.clientes_banco.id;
+
+
+--
+-- TOC entry 212 (class 1259 OID 16569)
+-- Name: transacoes; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.transacoes (
+    id integer NOT NULL,
+    valor numeric(10,2) NOT NULL,
+    data_transacao date NOT NULL,
+    cliente_id integer,
+    transacao date,
+    clientes_bancos_id bigint
+);
+
+
+ALTER TABLE public.transacoes OWNER TO postgres;
+
+--
+-- TOC entry 211 (class 1259 OID 16568)
+-- Name: transacoes_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.transacoes_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.transacoes_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3379 (class 0 OID 0)
+-- Dependencies: 211
+-- Name: transacoes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.transacoes_id_seq OWNED BY public.transacoes.id;
+
+
+--
+-- TOC entry 3214 (class 2604 OID 16555)
+-- Name: clientes_banco id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.clientes_banco ALTER COLUMN id SET DEFAULT nextval('public.clientes_banco_id_seq'::regclass);
+
+
+--
+-- TOC entry 3220 (class 2604 OID 16572)
+-- Name: transacoes id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transacoes ALTER COLUMN id SET DEFAULT nextval('public.transacoes_id_seq'::regclass);
+
+
+--
+-- TOC entry 3370 (class 0 OID 16552)
+-- Dependencies: 210
+-- Data for Name: clientes_banco; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.clientes_banco (id, nome, cpf, data_nascimento, endereco, email, saldo_conta, pais, numero_passaporte, data_criacao, hora_criacao, data_atualizacao, hora_atualizacao, usuario_responsavel, telefone) FROM stdin;
+2	Cliente 2	\N	1992-03-14	novo endereco atualizado	cliente2@email.com	1500.50	EUA	US123456	2023-12-27	17:47:07.908321	\N	\N	\N	\N
+4	Cliente 4	\N	1992-03-14	novo endereco atualizado	cliente4@email.com	2000.25	França	FR789012	2023-12-27	17:47:07.908321	\N	\N	\N	\N
+6	Cliente 6	\N	1992-03-14	novo endereco atualizado	cliente6@email.com	800.90	Alemanha	DE345678	2023-12-27	17:47:07.908321	\N	\N	\N	\N
+8	Cliente 8	\N	1992-03-14	novo endereco atualizado	cliente8@email.com	1800.75	Itália	IT567890	2023-12-27	17:47:07.908321	\N	\N	\N	\N
+10	Cliente 10	\N	1992-03-14	novo endereco atualizado	cliente10@email.com	2500.50	Japão	JP123456	2023-12-27	17:47:07.908321	\N	\N	\N	\N
+1	Cliente 1	111.111.111-11	1992-03-14	novo endereco atualizado	cliente1@email.com	1000.00	Brasil	\N	2023-12-27	17:47:07.908321	\N	\N	\N	SeuNumeroComDDD
+3	Cliente 3	333.333.333-33	1992-03-14	novo endereco atualizado	cliente3@email.com	500.75	Brasil	\N	2023-12-27	17:47:07.908321	\N	\N	\N	SeuNumeroComDDD
+5	Cliente 5	555.555.555-55	1992-03-14	novo endereco atualizado	cliente5@email.com	1200.00	Brasil	\N	2023-12-27	17:47:07.908321	\N	\N	\N	SeuNumeroComDDD
+7	Cliente 7	777.777.777-77	1992-03-14	novo endereco atualizado	cliente7@email.com	300.50	Brasil	\N	2023-12-27	17:47:07.908321	\N	\N	\N	SeuNumeroComDDD
+9	Cliente 9	999.999.999-99	1992-03-14	novo endereco atualizado	cliente9@email.com	600.00	Brasil	\N	2023-12-27	17:47:07.908321	\N	\N	\N	SeuNumeroComDDD
+12	Amanda Ramos	123.456.789-11	1990-01-01	\N	cliente@email.com	1000.00	Brasil	\N	\N	\N	\N	\N	admin	123456789
+15	João Silva	403.678.689-00	2000-08-17	\N	usuario@exemplo.com	1000.00	Brasil	\N	\N	\N	\N	\N	admin	+55 11 98765-4321
+16	Bastião Basseto	473.678.659-00	2008-08-17	\N	felix@exemplo.com	1052.00	Brasil	\N	\N	\N	\N	\N	admin	+55 14 98765-5577
+\.
+
+
+--
+-- TOC entry 3372 (class 0 OID 16569)
+-- Dependencies: 212
+-- Data for Name: transacoes; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.transacoes (id, valor, data_transacao, cliente_id, transacao, clientes_bancos_id) FROM stdin;
+1	800.14	2023-12-05	6	\N	\N
+2	600.69	2023-12-06	8	\N	\N
+3	1001.85	2023-12-07	5	\N	\N
+\.
+
+
+--
+-- TOC entry 3380 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: clientes_banco_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.clientes_banco_id_seq', 16, true);
+
+
+--
+-- TOC entry 3381 (class 0 OID 0)
+-- Dependencies: 211
+-- Name: transacoes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.transacoes_id_seq', 3, true);
+
+
+--
+-- TOC entry 3222 (class 2606 OID 16566)
+-- Name: clientes_banco clientes_banco_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.clientes_banco
+    ADD CONSTRAINT clientes_banco_email_key UNIQUE (email);
+
+
+--
+-- TOC entry 3224 (class 2606 OID 16564)
+-- Name: clientes_banco clientes_banco_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.clientes_banco
+    ADD CONSTRAINT clientes_banco_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3227 (class 2606 OID 16574)
+-- Name: transacoes transacoes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transacoes
+    ADD CONSTRAINT transacoes_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3225 (class 1259 OID 16567)
+-- Name: idx_cpf_auditoria; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_cpf_auditoria ON public.clientes_banco USING btree (cpf, data_atualizacao, hora_atualizacao, usuario_responsavel);
+
+
+--
+-- TOC entry 3229 (class 2606 OID 16582)
+-- Name: transacoes fk6afjtk703u7cpvl8nxsgaw8kf; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transacoes
+    ADD CONSTRAINT fk6afjtk703u7cpvl8nxsgaw8kf FOREIGN KEY (clientes_bancos_id) REFERENCES public.clientes_banco(id);
+
+
+--
+-- TOC entry 3228 (class 2606 OID 16575)
+-- Name: transacoes transacoes_cliente_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transacoes
+    ADD CONSTRAINT transacoes_cliente_id_fkey FOREIGN KEY (cliente_id) REFERENCES public.clientes_banco(id) ON DELETE CASCADE;
+
+
+-- Completed on 2024-01-08 00:50:06 -03
+
+--
+-- PostgreSQL database dump complete
+--
+
